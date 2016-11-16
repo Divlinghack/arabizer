@@ -369,6 +369,7 @@ balkantab = str.maketrans(SAMPA,BALKANCYRLLIC,BALKANREMOVE)
 #rustab = maketrans(SAMPA,RUSCYRLLIC)
 aratab = str.maketrans(SAMPA,ARABIC,':')
 ipatab = str.maketrans(SAMPA,IPA)
+sampatab = str.maketrans(IPA,SAMPA)
 #perstab = maketrans(SAMPA,PERSIAN)
 
 NONWORDS = r"""(^|$|['!"#$%&\'\(\)\*\+,-./:;<=>?@\[\\\]^_`{|}~ \t\n]+)"""
@@ -424,10 +425,13 @@ def getPhoneticStrings(sampa,ipa=False):
       'arabtrans':bidi(normalize(sampa.translate(aratab)))
       }
   elif ipa:
+    ipa = ipa.strip()
+    cleanipa = ipa.replace('ˈ','')
+    sampa = cleanipa.translate(sampatab)
     d ={'IPA':ipa,
-      'SAMPA':'',
-      'cyrtrans':'',
-      'arabtrans':''
+      'SAMPA':sampa,
+      'cyrtrans':sampa.translate(balkantab),
+      'arabtrans':bidi(normalize(sampa.translate(aratab)))
       }
   else:
     d ={'IPA':'',
