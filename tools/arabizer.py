@@ -1,5 +1,4 @@
 import sys
-from espeak import espeak
 from subprocess import check_output
 from sampa2x import getPhoneticStrings
 
