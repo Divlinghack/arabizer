@@ -8,6 +8,7 @@ api = Api(app)
 
 # to force the JSON library to handle unicode - we are in 2016 and it's still not the default... ;(
 app.config['JSON_AS_ASCII'] = False
+app.config['JSONIFY_MIMETYPE'] = 'application/json; charset=utf-8'
 
 class ResourceIndex(Resource):
   def get(self):
@@ -15,7 +16,7 @@ class ResourceIndex(Resource):
       {
         '_links': {
           'arabizer': {
-            'href': '/arabizer/{german_word}', 
+            'href': '/arabizer/{german_word}',
             'templated': True
           }
         }
