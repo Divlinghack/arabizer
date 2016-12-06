@@ -1,13 +1,13 @@
-#from string import maketrans 
+#from string import maketrans
 import sys
 import re
 #import pyfribidi
 
-SAMPA =         "abcdefghijklmnopqrstuvwxyzA{6QE@3IO29&U}VYBCDGLJNRSTHZ"
-IPA =           "abcdefghijklmnopqrstuvwxyzɑæɐɒɛəɜɪɔøœɶʊʉʌʏβçðɣʎɲŋʁʃθɥʒ"
-BALKANCYRLLIC = "абкдeфгхијклмнопкрстуввxизаeааeeeиоeeeууаибхдгљњнршсуж"
+SAMPA =         "abcdefghijklmnopqrstuvwxyzA{6QE@3IO29&U}VYBCDGLJNRSTHZr"
+IPA =           "abcdefghijklmnopqrstuvwxyzɑæɐɒɛəɜɪɔøœɶʊʉʌʏβçðɣʎɲŋʁʃθɥʒɾ"
+BALKANCYRLLIC = "абкдeфгхијклмнопкрстуввxизаeааeeeиоeeeууаибхдгљњнршсужр"
 #RUSCYRLLIC = "erfd"
-#editors have problems with switching between RTL and LTR 
+#editors have problems with switching between RTL and LTR
 #in the middle of the line, hence a list over several lines
 ARABIC = "".join(["ا",#a
           "ب",#b
@@ -63,6 +63,7 @@ ARABIC = "".join(["ا",#a
           "ث",#T
           "ي",#H
           "ج",#Z
+          "ر",#r (duplicate for IPA)
 ])
 
 #ARABIC =        "ﻌژﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌﻌژ"
@@ -73,7 +74,7 @@ ARABIC = "".join(["ا",#a
 BALKANREMOVE = ''
 #print(SAMPA)
 #print(ARABIC)
-  
+
 arabd = {
   "ء":
   {
@@ -242,7 +243,7 @@ arabd = {
           "medial":"ـگـ",
           "final":"ـگ",
           "label":"gāf"
-            
+
   },
   "ﻠ":
   {
@@ -377,8 +378,8 @@ NONWORDS = r"""(^|$|['!"#$%&\'\(\)\*\+,-./:;<=>?@\[\\\]^_`{|}~ \t\n]+)"""
 def bidi(s):
     #return pyfribidi.log2vis(s)
     return s
- 
-def lookupinitial(m):  
+
+def lookupinitial(m):
   s = m.groups(1)[0]
   try:
     result = arabd[s]['initial']
@@ -388,36 +389,36 @@ def lookupinitial(m):
   #print(result)
   return result
 
-def lookupfinal(m):  
+def lookupfinal(m):
   #print(6)
   s = m.groups(1)[0]
   #print(m.groups)
   try:
     result = arabd[s]['final']
   except KeyError:
-    print("could not translate %s in %s" % (s,m))    
+    print("could not translate %s in %s" % (s,m))
     result = s
   #print(result)
   return result
- 
+
 def normalize(s):
   tmp = s
   #find isolated glyphs
   isos = []
   for m in re.finditer(r"(?<!\B)([^ ])(?!\B)", s):
-    isos.append((m.start(),m.group(0)))   
+    isos.append((m.start(),m.group(0)))
   init = re.sub(r'(?<=\b)([^ ])',lookupinitial, tmp)
   fin = re.sub(r'([^ ])(?=\b)',lookupfinal, init)
-  iso = fin 
+  iso = fin
   #for pos,repl in isos:    #check for ـproblem FIXME
-    #iso = iso[:pos] + arabd[s[pos]]['isolated'] + iso[pos + 1:]    
+    #iso = iso[:pos] + arabd[s[pos]]['isolated'] + iso[pos + 1:]
   return iso
   #print(s)
   #print(init)
   #print(fin)
   #print(iso)
- 
-def getPhoneticStrings(sampa,ipa=False): 
+
+def getPhoneticStrings(sampa,ipa=False):
   if sampa:
     d ={'IPA':sampa.translate(ipatab),
       'SAMPA':sampa,
@@ -439,13 +440,13 @@ def getPhoneticStrings(sampa,ipa=False):
       'cyrtrans':'',
       'arabtrans':''
       }
-      
+
   return d
 
 if __name__ == "__main__":
   s = ' '.join(sys.argv[1:])
   c = s
   print(s.translate(balkantab))
-  print(bidi(normalize(s.translate(aratab))))  
+  print(bidi(normalize(s.translate(aratab))))
   print(s.translate(ipatab))
   print(getPhoneticStrings(s))

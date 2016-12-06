@@ -13,5 +13,5 @@ if __name__ == "__main__":
   phonetic = phonetize(german)
   sampa = getPhoneticStrings(False, ipa=phonetic)
   print(german)
-  print(phonetic)
+  print("phonetic (IPA): " + phonetic)
   print(sampa)
