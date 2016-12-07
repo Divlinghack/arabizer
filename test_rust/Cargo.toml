@@ -1,0 +1,8 @@
+[package]
+name = "test_rust"
+version = "0.1.0"
+authors = ["Yann Simon <yann.simon.fr@gmail.com>"]
+
+[dependencies]
+espeak-sys = "0.0.2"
+libc = "0.2"
